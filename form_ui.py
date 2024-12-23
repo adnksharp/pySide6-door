@@ -113,6 +113,13 @@ class Ui_Widget(object):
 
         self.gridLayout.addWidget(self.b, 3, 1, 1, 1)
 
+        self.pushButton = QPushButton(Widget)
+        self.pushButton.setObjectName(u"pushButton")
+        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
+        self.pushButton.setSizePolicy(sizePolicy)
+
+        self.gridLayout.addWidget(self.pushButton, 3, 2, 1, 1)
+
 
         self.horizontalLayout.addLayout(self.gridLayout)
 
@@ -192,6 +199,7 @@ class Ui_Widget(object):
         self.b_2.setText(QCoreApplication.translate("Widget", u"2", None))
         self.b_1.setText(QCoreApplication.translate("Widget", u"1", None))
         self.b.setText(QCoreApplication.translate("Widget", u"0", None))
+        self.pushButton.setText(QCoreApplication.translate("Widget", u"<", None))
         self.label.setText("")
         self.open.setText(QCoreApplication.translate("Widget", u"Abrir", None))
         self.log.setText("")
