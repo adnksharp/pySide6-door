@@ -41,12 +41,15 @@ class Widget(QWidget):
         self.ui.b_7.clicked.connect(lambda x: self.addCode(7))
         self.ui.b_8.clicked.connect(lambda x: self.addCode(8))
         self.ui.b_9.clicked.connect(lambda x: self.addCode(9))
+        self.ui.pushButton.clicked.connect(self.delCode)
         
     def addCode(self, k):
         self.code += str(k)
+        self.updates()
         
     def delCode(self):
         self.code = self.code[:-1]
+        self.updates()
         
     def updates(self):
         self.ui.lcdNumber.display(self.code)
