@@ -53,6 +53,9 @@ class Ui_Widget(object):
         self.lcdNumber.setFrameShadow(QFrame.Shadow.Plain)
         self.lcdNumber.setLineWidth(0)
         self.lcdNumber.setSmallDecimalPoint(True)
+        self.lcdNumber.setDigitCount(18)
+        self.lcdNumber.setMode(QLCDNumber.Mode.Dec)
+        self.lcdNumber.setSegmentStyle(QLCDNumber.SegmentStyle.Flat)
 
         self.verticalLayout_3.addWidget(self.lcdNumber)
 

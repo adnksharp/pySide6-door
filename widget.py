@@ -1,5 +1,11 @@
 # This Python file uses the following encoding: utf-8
 import sys
+import smtplib as smtp
+import notifypy as noty
+from dotenv import load_env as env
+from email.mime.multipart import MIMEMultipart as multipart
+from email.mime.text import MIMEText as text
+from ssl import create_default_context as myssl
 
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import QObject, QEvent, QTimer

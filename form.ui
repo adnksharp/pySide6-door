@@ -60,6 +60,15 @@
          <property name="smallDecimalPoint">
           <bool>true</bool>
          </property>
+         <property name="digitCount">
+          <number>18</number>
+         </property>
+         <property name="mode">
+          <enum>QLCDNumber::Mode::Dec</enum>
+         </property>
+         <property name="segmentStyle">
+          <enum>QLCDNumber::SegmentStyle::Flat</enum>
+         </property>
         </widget>
        </item>
        <item>
