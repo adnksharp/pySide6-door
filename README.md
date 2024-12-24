@@ -18,6 +18,26 @@ Control de puerta usando Arduino, Python y MongoDB
 pip install -r requirements.txt
 ```
 
+# Hardware usado
+
+![](https://i.imgur.com/doA0qco.png)
+<details>
+  <summary>...</summary>
+ 
+ ![](https://i.imgur.com/XvVJHp2.png)
+
+</details>
+
+- Arduino UNO
+- 1 Buzzer
+- 1 Led
+- 2 Resistencias de 330 $\Omega$
+- 1 Transistor NPN BC547
+- 1 Diodo 1N4001
+- 1 relay de 5V
+- 1 cerradura solenoide 12V
+- 1 fuente de 12V
+
 # Requisitos
 
 1. [FirmataExpress](https://mryslab.github.io/pymata4/firmata_express/#installation-instructions)
