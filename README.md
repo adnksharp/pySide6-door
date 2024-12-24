@@ -61,4 +61,3 @@ PASSWORD=contraseña
 >
 > - Enviar notificaciones de acceso por email.
 > - Uso de una base de datos en la nube.
-> - Agregar el circuito electronico del proyecto.
