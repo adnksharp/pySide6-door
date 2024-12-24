@@ -8,6 +8,7 @@ from os import getenv
 from email.mime.multipart import MIMEMultipart as multipart
 from email.mime.text import MIMEText as text
 from ssl import create_default_context as myssl
+from pymata4.pymata4 import Pymata4 as arduino
 
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import QObject, QEvent, QTimer
@@ -18,6 +19,24 @@ from PySide6.QtCore import QObject, QEvent, QTimer
 #     pyside2-uic form.ui -o ui_form.py
 from ui_form import Ui_Widget
 from log_ui import Ui_Widget as Ui_History
+
+class Board():
+    def __init__(self, *pin):
+        self.ino = arduino()
+        self.door = pin[0]
+        self.led = [pin[1], pin[2]]
+        for i in pin:
+            self.ino.set_pin_mode_digital_output(i)
+        self.b = False
+    
+    def on(self, state):
+        self.ino.digital_pin_write(self.door, state)
+        self.ino.digital_pin_write(self.led[0], not state)
+        self.ino.digital_pin_write(self.led[1], state)
+        
+    def blink(self):
+        self.ino.digital_pin_write(self.led[1], self.b)
+        self.b = not self.b
 
 class Email():
     def __init__(self, parent = None):
@@ -77,6 +96,9 @@ class Keyboard(QObject):
 class Widget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        # selenoid, lock, unlock leds
+        self.board = Board(13, 2, 3)
+        self.board.on(False)
         self.ui = Ui_Widget()
         self.ui.setupUi(self)
         
@@ -101,6 +123,7 @@ class Widget(QWidget):
         self.ui.b_9.clicked.connect(lambda x: self.addCode(9))
         self.ui.pushButton.clicked.connect(self.delCode)
         self.ui.open.clicked.connect(self.email.send)
+        
         self.timer = QTimer()
         self.timer.timeout.connect(self.closing)
         
@@ -121,18 +144,27 @@ class Widget(QWidget):
                 self.ui.label.setText('Acceso permitido')
                 self.timer.start(1000)
                 self.paswd = 'X'
+                self.board.on(True)
             else:
                 self.ui.label.setText('Acceso denegado')
+                self.board.on(False)
             self.code = ''
+            self.ui.lcdNumber.display('')
 
     def  closing(self):
         if self.toclose > 0:
             self.ui.label.setText(f'Acceso permitido ({self.toclose}s)')
             self.toclose -= 1
+            self.board.blink()
         else:
             self.toclose = 5
             self.ui.label.setText('')
             self.timer.stop()
+            self.board.on(False)
+            
+    def closeEvent(self, event):
+        self.board.ino.shutdown()
+        return super().closeEvent(event)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
