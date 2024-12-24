@@ -15,20 +15,20 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QListView, QSizePolicy, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QListWidget, QListWidgetItem, QSizePolicy,
+    QVBoxLayout, QWidget)
 
 class Ui_Widget(object):
     def setupUi(self, Widget):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
-        Widget.resize(283, 340)
+        Widget.resize(401, 340)
         self.verticalLayout_2 = QVBoxLayout(Widget)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.listView = QListView(Widget)
-        self.listView.setObjectName(u"listView")
+        self.listWidget = QListWidget(Widget)
+        self.listWidget.setObjectName(u"listWidget")
 
-        self.verticalLayout_2.addWidget(self.listView)
+        self.verticalLayout_2.addWidget(self.listWidget)
 
 
         self.retranslateUi(Widget)

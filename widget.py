@@ -12,7 +12,7 @@ from ssl import create_default_context as myssl
 from pymata4.pymata4 import Pymata4 as arduino
 from pymongo import MongoClient as mongose
 
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication, QWidget, QListWidget
 from PySide6.QtCore import QObject, QEvent, QTimer
 
 # Important:
@@ -20,7 +20,7 @@ from PySide6.QtCore import QObject, QEvent, QTimer
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
 from ui_form import Ui_Widget
-from log_ui import Ui_Widget as Ui_History
+from ui_log import Ui_Widget as Ui_History
 
 class DB():
     def __init__(self, host = 'mongodb://localhost:27017/', server = 'Arduino', db = 'door'):
@@ -117,8 +117,11 @@ class Widget(QWidget):
         # selenoid, lock, unlock leds
         self.board = Board(13, 2, 3)
         self.board.on(False)
+        
         self.ui = Ui_Widget()
         self.ui.setupUi(self)
+        
+        self.h = History()
         
         self.code = ''
         self.paswd = 'X'
@@ -143,6 +146,7 @@ class Widget(QWidget):
         self.ui.b_9.clicked.connect(lambda x: self.addCode(9))
         self.ui.pushButton.clicked.connect(self.delCode)
         self.ui.open.clicked.connect(self.email.send)
+        self.ui.log.clicked.connect(self.showH)
         
         self.timer = QTimer()
         self.timer.timeout.connect(self.closing)
@@ -171,6 +175,7 @@ class Widget(QWidget):
                 self.board.on(False)
             self.code = ''
             self.ui.lcdNumber.display('')
+            self.updateList()
 
     def  closing(self):
         if self.toclose > 0:
@@ -185,8 +190,25 @@ class Widget(QWidget):
             
     def closeEvent(self, event):
         self.board.ino.shutdown()
+        self.h.close()
         return super().closeEvent(event)
+    
+    def updateList(self):
+        data = self.db.get()
+        self.h.ui.listWidget.clear()
+        for d in data:
+            self.h.ui.listWidget.addItem(f'Fecha: {d['data']}\tAcceso: {'concedido' if d['done'] else 'denegado'}')
+    
+    def showH(self):
+        self.updateList()
+        self.h.show()        
 
+class History(QWidget):
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self.ui = Ui_History()
+        self.ui.setupUi(self)
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = Widget()
