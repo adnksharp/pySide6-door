@@ -2,13 +2,15 @@
 import sys
 from random import randint as random
 import smtplib as smtp
-import notifypy as noty
+from time import strftime as time
+# import notifypy as noty
 from dotenv import load_dotenv as env
 from os import getenv
 from email.mime.multipart import MIMEMultipart as multipart
 from email.mime.text import MIMEText as text
 from ssl import create_default_context as myssl
 from pymata4.pymata4 import Pymata4 as arduino
+from pymongo import MongoClient as mongose
 
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import QObject, QEvent, QTimer
@@ -19,6 +21,22 @@ from PySide6.QtCore import QObject, QEvent, QTimer
 #     pyside2-uic form.ui -o ui_form.py
 from ui_form import Ui_Widget
 from log_ui import Ui_Widget as Ui_History
+
+class DB():
+    def __init__(self, host = 'mongodb://localhost:27017/', server = 'Arduino', db = 'door'):
+        srv = mongose(host)
+        mydb = srv[server]
+        self.collections = mydb[db]
+        
+    def add(self, done):
+        data = {
+            'data': time("%Y-%m-%d, %A, %H:%M:%S"),
+            'done': done
+        }
+        self.collections.insert_one(data)
+        
+    def get(self):
+        return [i for i in self.collections.find()]
 
 class Board():
     def __init__(self, *pin):
@@ -111,6 +129,8 @@ class Widget(QWidget):
         
         self.email = Email(self)
         
+        self.db = DB()
+        
         self.ui.b.clicked.connect(lambda x: self.addCode(0))
         self.ui.b_1.clicked.connect(lambda x: self.addCode(1))
         self.ui.b_2.clicked.connect(lambda x: self.addCode(2))
@@ -139,9 +159,10 @@ class Widget(QWidget):
     def updates(self):
         self.ui.lcdNumber.display(self.code)
         if len(self.code) == 6:
+            self.db.add(str(self.paswd) == self.code)
             if  str(self.paswd) == self.code:
                 print('pass')
-                self.ui.label.setText('Acceso permitido')
+                self.ui.label.setText('Acceso concedido')
                 self.timer.start(1000)
                 self.paswd = 'X'
                 self.board.on(True)
@@ -153,7 +174,7 @@ class Widget(QWidget):
 
     def  closing(self):
         if self.toclose > 0:
-            self.ui.label.setText(f'Acceso permitido ({self.toclose}s)')
+            self.ui.label.setText(f'Acceso concedido ({self.toclose}s)')
             self.toclose -= 1
             self.board.blink()
         else:
