@@ -1,1 +1,6 @@
 PySide6
+smtplib
+dotenv
+email
+pymata4
+pymongo
