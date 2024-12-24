@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+electronic/door/door-backups/*
 
 # C extensions
 *.so
